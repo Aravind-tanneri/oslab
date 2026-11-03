@@ -1,6 +1,6 @@
 # Operating Systems Lab
 
-Simple and minimalist C++ implementations for undergraduate Operating Systems lab coursework.
+Simple and minimalist C++ implementations Operating Systems lab (CS2022) coursework.
 
 ## Structure
 
