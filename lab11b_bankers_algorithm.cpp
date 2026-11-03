@@ -1,133 +1,80 @@
 #include <iostream>
 #include <vector>
-#include <string>
 
 using namespace std;
 
-const int NUM_P = 5;
-const int NUM_R = 3;
+const int P = 5, R = 3;
 
-// Checks if the system is in a safe state and finds a safe sequence
-bool is_safe_state(const vector<vector<int>>& alloc, const vector<vector<int>>& need, vector<int> avail, vector<int>& safe_seq) {
-    vector<int> work = avail;
-    vector<bool> finish(NUM_P, false);
-    safe_seq.clear();
+bool check_safe(const int alloc[P][R], const int need[P][R], int avail[R], vector<int>& seq) {
+    int work[R];
+    for (int i = 0; i < R; i++) work[i] = avail[i];
+    bool finish[P] = {false};
+    seq.clear();
 
-    for (int count = 0; count < NUM_P; count++) {
-        bool found = false;
-        for (int p = 0; p < NUM_P; p++) {
-            if (!finish[p]) {
-                bool can_allocate = true;
-                for (int j = 0; j < NUM_R; j++) {
-                    if (need[p][j] > work[j]) {
-                        can_allocate = false;
-                        break;
-                    }
+    for (int k = 0; k < P; k++) {
+        for (int i = 0; i < P; i++) {
+            if (!finish[i]) {
+                bool possible = true;
+                for (int j = 0; j < R; j++) {
+                    if (need[i][j] > work[j]) { possible = false; break; }
                 }
-                if (can_allocate) {
-                    for (int j = 0; j < NUM_R; j++) {
-                        work[j] += alloc[p][j];
-                    }
-                    finish[p] = true;
-                    safe_seq.push_back(p);
-                    found = true;
-                    break;
+                if (possible) {
+                    for (int j = 0; j < R; j++) work[j] += alloc[i][j];
+                    finish[i] = true;
+                    seq.push_back(i);
                 }
             }
         }
-        if (!found) return false;
     }
-    return true;
+    return seq.size() == P;
 }
 
 int main() {
-    cout << "========================================================\n";
-    cout << " Lab 11b: Deadlock Avoidance (Banker's Algorithm)\n";
-    cout << "========================================================\n";
-
-    // Data from Lab Task 11b specification
-    vector<vector<int>> alloc = {
-        {0, 1, 0}, // P0
-        {2, 0, 0}, // P1
-        {3, 0, 2}, // P2
-        {2, 1, 1}, // P3
-        {0, 0, 2}  // P4
+    int alloc[P][R] = {
+        {0, 1, 0}, {2, 0, 0}, {3, 0, 2}, {2, 1, 1}, {0, 0, 2}
     };
-
-    vector<vector<int>> max_claim = {
-        {7, 5, 3}, // P0
-        {3, 2, 2}, // P1
-        {9, 0, 2}, // P2
-        {2, 2, 2}, // P3
-        {4, 3, 3}  // P4
+    int max[P][R] = {
+        {7, 5, 3}, {3, 2, 2}, {9, 0, 2}, {2, 2, 2}, {4, 3, 3}
     };
+    int avail[R] = {3, 3, 2};
 
-    vector<int> avail = {3, 3, 2};
-
-    // Calculate Need Matrix = Max - Allocation
-    vector<vector<int>> need(NUM_P, vector<int>(NUM_R));
-    cout << "\nNeed Matrix:\n";
-    for (int i = 0; i < NUM_P; i++) {
+    int need[P][R];
+    cout << "Need Matrix:\n";
+    for (int i = 0; i < P; i++) {
         cout << "P" << i << ": ";
-        for (int j = 0; j < NUM_R; j++) {
-            need[i][j] = max_claim[i][j] - alloc[i][j];
+        for (int j = 0; j < R; j++) {
+            need[i][j] = max[i][j] - alloc[i][j];
             cout << need[i][j] << " ";
         }
         cout << "\n";
     }
 
-    // Safety check
-    vector<int> safe_seq;
-    if (is_safe_state(alloc, need, avail, safe_seq)) {
-        cout << "\nSystem is in a SAFE state.\nOne safe sequence: ";
-        for (size_t i = 0; i < safe_seq.size(); i++) {
-            cout << "P" << safe_seq[i] << (i + 1 < safe_seq.size() ? " -> " : "\n");
+    vector<int> seq;
+    if (check_safe(alloc, need, avail, seq)) {
+        cout << "\nSystem is in a SAFE state.\nSafe sequence: ";
+        for (size_t i = 0; i < seq.size(); i++) {
+            cout << "P" << seq[i] << (i + 1 < seq.size() ? " -> " : "\n");
         }
     } else {
-        cout << "\nSystem is in an UNSAFE state (Deadlock potential).\n";
+        cout << "\nSystem is in an UNSAFE state.\n";
     }
 
-    // Additional experiment: Resource-Request Algorithm for P1: [1, 0, 2]
-    cout << "\n---------------- Resource-Request Test ----------------\n";
-    int req_proc = 1;
-    vector<int> request = {1, 0, 2};
-    cout << "Suppose process P" << req_proc << " requests: ["
-         << request[0] << ", " << request[1] << ", " << request[2] << "]\n";
-
-    // Step 1: Check if Request <= Need
-    bool le_need = true;
-    for (int j = 0; j < NUM_R; j++) {
-        if (request[j] > need[req_proc][j]) le_need = false;
+    // Request from P1: [1, 0, 2]
+    cout << "\nSuppose P1 requests [1, 0, 2]:\n";
+    int req[R] = {1, 0, 2};
+    for (int j = 0; j < R; j++) {
+        avail[j] -= req[j];
+        alloc[1][j] += req[j];
+        need[1][j] -= req[j];
     }
 
-    // Step 2: Check if Request <= Available
-    bool le_avail = true;
-    for (int j = 0; j < NUM_R; j++) {
-        if (request[j] > avail[j]) le_avail = false;
-    }
-
-    if (!le_need) {
-        cout << "Error: Process exceeded its maximum claim!\n";
-    } else if (!le_avail) {
-        cout << "Process must wait: Resources not currently available.\n";
+    if (check_safe(alloc, need, avail, seq)) {
+        cout << "Request Granted. Resulting system is SAFE.\nSafe sequence: ";
+        for (size_t i = 0; i < seq.size(); i++) {
+            cout << "P" << seq[i] << (i + 1 < seq.size() ? " -> " : "\n");
+        }
     } else {
-        // Pretend to allocate
-        for (int j = 0; j < NUM_R; j++) {
-            avail[j] -= request[j];
-            alloc[req_proc][j] += request[j];
-            need[req_proc][j] -= request[j];
-        }
-
-        vector<int> new_safe_seq;
-        if (is_safe_state(alloc, need, avail, new_safe_seq)) {
-            cout << "Request GRANTED immediately. Resulting state is SAFE.\n";
-            cout << "Safe Sequence: ";
-            for (size_t i = 0; i < new_safe_seq.size(); i++) {
-                cout << "P" << new_safe_seq[i] << (i + 1 < new_safe_seq.size() ? " -> " : "\n");
-            }
-        } else {
-            cout << "Request DENIED: Resulting state would be UNSAFE.\n";
-        }
+        cout << "Request Denied. Would cause unsafe state.\n";
     }
 
     return 0;

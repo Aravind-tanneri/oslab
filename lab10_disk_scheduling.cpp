@@ -5,84 +5,54 @@
 
 using namespace std;
 
-void run_fcfs(vector<int> req, int head) {
-    int total_seek = 0;
-    int curr = head;
-    cout << "\n--- FCFS Disk Scheduling ---\nSeek Sequence: " << curr;
-    for (int r : req) {
-        total_seek += abs(r - curr);
-        curr = r;
-        cout << " -> " << curr;
-    }
-    cout << "\nTotal Head Movement = " << total_seek << " cylinders\n";
+void fcfs(vector<int> req, int head) {
+    int seek = 0, curr = head;
+    for (int r : req) { seek += abs(r - curr); curr = r; }
+    cout << "FCFS Total Head Movement: " << seek << " cylinders\n";
 }
 
-void run_sstf(vector<int> req, int head) {
-    int total_seek = 0;
-    int curr = head;
-    int n = req.size();
-    vector<bool> visited(n, false);
+void sstf(vector<int> req, int head) {
+    int seek = 0, curr = head, n = req.size();
+    vector<bool> done(n, false);
 
-    cout << "\n--- SSTF Disk Scheduling ---\nSeek Sequence: " << curr;
     for (int i = 0; i < n; i++) {
-        int min_dist = 1e9;
-        int next_idx = -1;
+        int min_d = 1e9, idx = -1;
         for (int j = 0; j < n; j++) {
-            if (!visited[j] && abs(req[j] - curr) < min_dist) {
-                min_dist = abs(req[j] - curr);
-                next_idx = j;
+            if (!done[j] && abs(req[j] - curr) < min_d) {
+                min_d = abs(req[j] - curr);
+                idx = j;
             }
         }
-        visited[next_idx] = true;
-        total_seek += min_dist;
-        curr = req[next_idx];
-        cout << " -> " << curr;
+        done[idx] = true;
+        seek += min_d;
+        curr = req[idx];
     }
-    cout << "\nTotal Head Movement = " << total_seek << " cylinders\n";
+    cout << "SSTF Total Head Movement: " << seek << " cylinders\n";
 }
 
-void run_scan(vector<int> req, int head, int disk_size = 200) {
-    int total_seek = 0;
-    int curr = head;
+void scan(vector<int> req, int head, int disk_size = 200) {
+    int seek = 0, curr = head;
     vector<int> left, right;
+    for (int r : req) (r < head ? left : right).push_back(r);
 
-    for (int r : req) {
-        if (r < head) left.push_back(r);
-        else right.push_back(r);
-    }
-    // Scan moving towards high end
     right.push_back(disk_size - 1);
-    sort(left.begin(), left.end(), greater<int>());
     sort(right.begin(), right.end());
+    sort(left.begin(), left.end(), greater<int>());
 
-    cout << "\n--- SCAN Disk Scheduling (Moving High) ---\nSeek Sequence: " << curr;
-    for (int r : right) {
-        total_seek += abs(r - curr);
-        curr = r;
-        cout << " -> " << curr;
-    }
-    for (int r : left) {
-        total_seek += abs(r - curr);
-        curr = r;
-        cout << " -> " << curr;
-    }
-    cout << "\nTotal Head Movement = " << total_seek << " cylinders\n";
+    for (int r : right) { seek += abs(r - curr); curr = r; }
+    for (int r : left)  { seek += abs(r - curr); curr = r; }
+
+    cout << "SCAN Total Head Movement: " << seek << " cylinders\n";
 }
 
 int main() {
-    cout << "=============================================\n";
-    cout << " Lab 10: Disk Scheduling (FCFS, SSTF, SCAN)\n";
-    cout << "=============================================\n";
-
     vector<int> req = {98, 183, 37, 122, 14, 124, 65, 67};
     int head = 53;
 
-    cout << "Default Initial Head Position: " << head << "\n";
-    cout << "Default Request Queue: {98, 183, 37, 122, 14, 124, 65, 67}\n";
-
-    run_fcfs(req, head);
-    run_sstf(req, head);
-    run_scan(req, head);
+    cout << "Initial Head: " << head << "\n";
+    fcfs(req, head);
+    sstf(req, head);
+    scan(req, head);
 
     return 0;
 }
