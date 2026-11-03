@@ -113,7 +113,7 @@ Average Waiting Time    = 5.75
 
 ---
 
-## Lab 4: Shortest Job First (SJF) Scheduling
+## Lab 4: Shortest Job First (SJF) Scheduling (Non-Preemptive)
 *File: [`lab4_sjf.cpp`](./lab4_sjf.cpp)*
 
 ### Sample Input
@@ -126,8 +126,6 @@ P4 (AT & BT): 3 1
 ```
 
 ### Expected Output
-
-#### 1. Non-Preemptive SJF
 ```text
 --- SJF (Non-Preemptive) ---
 PID     AT      BT      CT      TAT     WT
@@ -136,17 +134,6 @@ P2      1       4       15      14      10
 P3      2       2       11      9       7
 P4      3       1       9       6       5
 Avg TAT: 9.25 | Avg WT: 5.5
-```
-
-#### 2. Preemptive SJF (SRTF)
-```text
---- SRTF (Preemptive SJF) ---
-PID     AT      BT      CT      TAT     WT
-P1      0       8       15      15      7
-P2      1       4       8       7       3
-P3      2       2       4       2       0
-P4      3       1       5       2       1
-Avg TAT: 6.5 | Avg WT: 2.75
 ```
 
 ---

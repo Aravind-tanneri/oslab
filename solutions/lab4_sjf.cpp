@@ -4,7 +4,7 @@
 using namespace std;
 
 struct Process {
-    int id, at, bt, rem_bt, ct, tat, wt, rt;
+    int id, at, bt, ct, tat, wt, rt;
 };
 
 void sjf_non_preemptive(vector<Process> p) {
@@ -38,41 +38,6 @@ void sjf_non_preemptive(vector<Process> p) {
     cout << "Avg TAT: " << tot_tat / n << " | Avg WT: " << tot_wt / n << "\n";
 }
 
-void srtf_preemptive(vector<Process> p) {
-    int n = p.size(), completed = 0, time = 0;
-    double tot_tat = 0, tot_wt = 0;
-
-    for (auto &x : p) { x.rem_bt = x.bt; x.rt = -1; }
-
-    while (completed < n) {
-        int idx = -1, min_rem = 1e9;
-        for (int i = 0; i < n; i++) {
-            if (p[i].at <= time && p[i].rem_bt > 0 && p[i].rem_bt < min_rem) {
-                min_rem = p[i].rem_bt;
-                idx = i;
-            }
-        }
-        if (idx == -1) { time++; continue; }
-
-        if (p[idx].rt == -1) p[idx].rt = time - p[idx].at;
-        p[idx].rem_bt--;
-        time++;
-
-        if (p[idx].rem_bt == 0) {
-            p[idx].ct = time;
-            p[idx].tat = p[idx].ct - p[idx].at;
-            p[idx].wt = p[idx].tat - p[idx].bt;
-            completed++;
-            tot_tat += p[idx].tat;
-            tot_wt += p[idx].wt;
-        }
-    }
-
-    cout << "\n--- SRTF (Preemptive SJF) ---\nPID\tAT\tBT\tCT\tTAT\tWT\n";
-    for (auto &x : p) cout << "P" << x.id << "\t" << x.at << "\t" << x.bt << "\t" << x.ct << "\t" << x.tat << "\t" << x.wt << "\n";
-    cout << "Avg TAT: " << tot_tat / n << " | Avg WT: " << tot_wt / n << "\n";
-}
-
 int main() {
     int n;
     cout << "Enter number of processes: ";
@@ -86,6 +51,5 @@ int main() {
     }
 
     sjf_non_preemptive(p);
-    srtf_preemptive(p);
     return 0;
 }
