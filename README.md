@@ -16,6 +16,7 @@ Simple and minimalist C++ implementations Operating Systems lab (CS2022) coursew
 | **Lab 3** | FCFS Scheduling | [lab3_fcfs.cpp](solutions/lab3_fcfs.cpp) |
 | **Lab 4** | SJF Scheduling (Non-Preemptive) | [lab4_sjf.cpp](solutions/lab4_sjf.cpp) |
 | **Lab 5** | Round Robin & SRTF Scheduling | [lab5_rr_srtf.cpp](solutions/lab5_rr_srtf.cpp) |
+| **Lab 6** | IPC via Message Queues | [lab6_ipc_message_queue.cpp](solutions/lab6_ipc_message_queue.cpp) |
 | **Lab 7** | Page Replacement (FIFO, Optimal, LRU) | [lab7_page_replacement.cpp](solutions/lab7_page_replacement.cpp) |
 | **Lab 8** | Paging & Address Translation | [lab8_paging_address_translation.cpp](solutions/lab8_paging_address_translation.cpp) |
 | **Lab 9** | Memory Allocation (First, Best, Worst Fit) | [lab9_memory_allocation.cpp](solutions/lab9_memory_allocation.cpp) |

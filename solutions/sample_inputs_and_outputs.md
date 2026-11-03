@@ -164,6 +164,18 @@ Avg TAT: 9.00 | Avg WT: 5.50
 
 ---
 
+## Lab 6: Inter-Process Communication (IPC) Using Message Queues
+*File: [`lab6_ipc_message_queue.cpp`](./lab6_ipc_message_queue.cpp)*
+
+### Execution & Expected Output
+```text
+[Sender/Parent] Sending Message: "Hello from Sender via Message Queue!"
+[Receiver/Child] Received Message: "Hello from Sender via Message Queue!"
+[Sender/Parent] Message queue destroyed successfully.
+```
+
+---
+
 ## Lab 7: Page Replacement Algorithms
 *File: [`lab7_page_replacement.cpp`](./lab7_page_replacement.cpp)*
 

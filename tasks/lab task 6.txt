@@ -1,0 +1,11 @@
+Lab Task 6: Inter-Process Communication (IPC) Using Message Queues
+
+Objective:
+Implement inter-process communication between processes using Message Queues.
+Demonstrate message passing where a sender process transmits a message to a shared queue and a receiver process reads it.
+
+Key System Calls:
+- msgget(): Create or access a message queue.
+- msgsnd(): Send a message to the queue.
+- msgrcv(): Receive a message from the queue.
+- msgctl(): Control operations (e.g., IPC_RMID to destroy the queue).
