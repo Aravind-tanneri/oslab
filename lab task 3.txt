@@ -1,0 +1,4 @@
+Please upload the in the Google Classroom.  
+Lab Task: FCFS (FIFO) CPU Scheduling Algorithm
+
+Task Statement:Write a program to implement the First-Come, First-Served (FCFS/FIFO) CPU Scheduling Algorithm. The program should accept the number of processes, their arrival times, and burst times as input. Schedule the processes according to their arrival order and calculate the Completion Time, Turnaround Time, and Waiting Time for each process. Finally, display the Gantt Chart, Average Waiting Time, and Average Turnaround Time.
